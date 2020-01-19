@@ -1,7 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-    @import url('https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700&display=swap&subset=cyrillic-ext');
+    @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap');
 
     *, *::before, *::after {
         box-sizing: border-box;
@@ -12,12 +12,12 @@ const GlobalStyle = createGlobalStyle`
     }
 
     html {
-        font-size: 62.5%; // 1rem = 10px;
+        font-size: 62.5%; /* 1rem = 10px; */
     }
 
     body {
         font-size: 1.6rem;
-        font-family: "Montserrat", sans-serif;
+        font-family: 'Montserrat', sans-serif;
     }
 `;
 

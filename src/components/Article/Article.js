@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { Redirect } from 'react-router-dom';
 import Heading from '../Heading/Heading';
 import Button from '../Button/Button';
 import Paragraph from '../Paragraph/Paragraph';
@@ -33,7 +34,7 @@ const InnerWrapper = styled.div`
 `;
 
 const DateInfo = styled.p`
-  font-weight: 600;
+  font-weight: 400;
   font-size: ${({ theme }) => theme.fontSize.xs};
   margin: 0 0 5px;
 `;
@@ -42,6 +43,10 @@ const StyledHeading = styled(Heading)`
   margin: 5px 0 0;
 `;
 
+const StyledParagraph = styled(Paragraph)`
+  line-height: 1.4;
+  font-size: ${({ theme }) => theme.fontSize.s};
+`;
 /*
 const StyledAvatar = styled.img`
   height: 86px;
@@ -56,21 +61,35 @@ const StyledAvatar = styled.img`
 `;
 */
 
-const Card = ({ cardType }) => (
-  <StyledWrapper>
-    <InnerWrapper>
-      <StyledHeading>Title</StyledHeading>
-      <DateInfo>3 days</DateInfo>
-    </InnerWrapper>
-    <InnerWrapper flex>
-      <Paragraph>
-        Elitr vero ipsum erat at sea clita, sea est et clita stet no invidunt no consetetur lorem.
-        Sed dolores gubergren stet et invidunt accusam justo duo. Eos ipsum diam sit vero dolore. Et
-        ea gubergren diam diam est, labore tempor lorem sadipscing justo aliquyam sea.
-      </Paragraph>
-      <Button small>remove</Button>
-    </InnerWrapper>
-  </StyledWrapper>
-);
+class Article extends React.Component {
+  state = {
+    redirect: false,
+  };
 
-export default Card;
+  handleArticleClick = () => this.setState({ redirect: true });
+
+  render() {
+    const { id, title, created, author, content } = this.props;
+
+    if (this.state.redirect) {
+      return <Redirect to={`posts/${id}`} />;
+    }
+
+    return (
+      <StyledWrapper onClick={this.handleArticleClick}>
+        <InnerWrapper>
+          <StyledHeading>{title}</StyledHeading>
+          <DateInfo>
+            Upublikowano {created} dni temu przez {author}
+          </DateInfo>
+        </InnerWrapper>
+        <InnerWrapper flex>
+          <StyledParagraph>{content}</StyledParagraph>
+          <Button small>remove</Button>
+        </InnerWrapper>
+      </StyledWrapper>
+    );
+  }
+}
+
+export default Article;

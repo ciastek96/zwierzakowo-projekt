@@ -19,7 +19,7 @@ const StyledHeading = styled(Heading)`
 `;
 
 const StyledGridWrapper = styled.div`
-  padding: 25px 50px;
+  padding: 10px 50px 50px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 45px;

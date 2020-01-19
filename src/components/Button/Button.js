@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import BackArrowIcon from 'assets/svg/arrow-left.svg';
 
 const Button = styled.button`
   border: 2px solid ${({ theme }) => theme.primary};
@@ -30,6 +31,18 @@ const Button = styled.button`
       height: 30px;
       font-size: 10px;
     `}
+
+    ${({ round }) =>
+      round &&
+      css`
+        font-size: ${({ theme }) => theme.fontSize.m};
+        background: url(${BackArrowIcon}) no-repeat;
+        background-position: 50% 50%;
+        background-size: 70%;
+        width: 60px;
+        height: 60px;
+        font-size: 10px;
+      `}
 `;
 
 export default Button;
