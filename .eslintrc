@@ -1,0 +1,12 @@
+{
+  "extends": ["airbnb", "prettier", "prettier/react"],
+  "eslint.validate": ["javascript", "javascriptreact", "html", "typescriptreact"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  }
+}
