@@ -8,4 +8,6 @@ export const routes = {
   login: '/login',
   register: '/register',
   newpost: '/newpost',
+  settings: '/settings',
+  logout: '/logout',
 };

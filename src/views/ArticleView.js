@@ -1,50 +1,54 @@
-import React from 'react';
-import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import React, { Component } from 'react';
 import UserPageTemplate from 'templates/UserPageTemplate';
-import Heading from 'components/Heading/Heading';
-import Paragraph from 'components/Paragraph/Paragraph';
-import Button from 'components/Button/Button';
-import BackArrowIcon from 'assets/icons/link.svg';
+import axios from 'axios';
+import Article from 'templates/Article';
+import Comments from 'components/Comments/Comments';
 
-const StyledWrapper = styled.div`
-  margin: 60px 100px;
-  max-width: 550px;
-  display: flex;
-  flex-direction: column;
-`;
+class ArticleView extends Component {
+  state = {
+    post: null,
+    idPost: '',
+  };
 
-const StyledButton = styled(Button)`
-  margin: 0 0 0 100px;
-`;
+  componentDidMount() {
+    //this.getPosts();
+    const { id } = this.props.match.params;
+    axios
+      .get(`http://localhost:4000/posts/${id}`)
+      .then(({ data }) =>
+        this.setState({
+          post: data,
+          idPost: id,
+        }),
+      )
+      .catch(err => console.log(err));
+  }
 
-const StyledHeading = styled(Heading)`
-  font-size: ${({ theme }) => theme.fontSize.xl};
-  margin-bottom: 0;
-`;
+  getPosts = () => {
+    axios
+      .get('http://localhost:4000/posts')
+      .then(response => response.data)
+      .then(response =>
+        this.setState({
+          post: response.data,
+        }),
+      )
+      .catch(err => console.error(err));
+  };
 
-const StyledParagraph = styled(Paragraph)`
-  line-height: 1.7;
-  margin: 15px 0;
-`;
-
-const ArticleView = ({ match, id, title, author, created, content }) => (
-  <UserPageTemplate>
-    <NavLink to="/">
-      <StyledButton round />
-    </NavLink>
-    <StyledWrapper>
-      <StyledHeading>Sonia</StyledHeading>
-      <StyledParagraph>
-        Sadipscing takimata invidunt at takimata ipsum, ipsum vero erat takimata takimata takimata
-        ipsum dolore est accusam, et lorem gubergren ipsum amet ea, diam amet ipsum at justo lorem
-        at lorem, gubergren aliquyam amet dolores lorem gubergren voluptua ea labore amet, aliquyam
-        sit gubergren sit lorem et. Takimata et ea ipsum takimata sanctus gubergren. Diam vero erat
-        sit et et. Kasd duo sea takimata et ut diam. Sed clita duo erat rebum. Ipsum vero nonumy sit
-        no voluptua takimata rebum elitr..
-      </StyledParagraph>
-    </StyledWrapper>
-  </UserPageTemplate>
-);
+  render() {
+    const { post, idPost } = this.state;
+    if (post === null) {
+      return <UserPageTemplate></UserPageTemplate>;
+    } else {
+      return (
+        <UserPageTemplate>
+          <Article title={post.data[0].title} content={post.data[0].content} />
+          <Comments idPost={idPost} />
+        </UserPageTemplate>
+      );
+    }
+  }
+}
 
 export default ArticleView;

@@ -84,8 +84,10 @@ class Article extends React.Component {
           </DateInfo>
         </InnerWrapper>
         <InnerWrapper flex>
-          <StyledParagraph>{content}</StyledParagraph>
-          <Button small>remove</Button>
+          <StyledParagraph>
+            {content.length > 230 ? content.substr(0, 230) + '...' : content}
+          </StyledParagraph>
+          <Button small>Czytaj</Button>
         </InnerWrapper>
       </StyledWrapper>
     );

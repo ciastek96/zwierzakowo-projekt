@@ -1,10 +1,10 @@
 import React from 'react';
 import UserPageTemplate from 'templates/UserPageTemplate';
-import LoginForm from 'components/LoginForm/LoginForm';
+import RegisterForm from 'components/RegisterForm/RegisterForm';
 
 const RegisterView = () => (
   <UserPageTemplate header="Rejestracja">
-    <LoginForm formType="register" />
+    <RegisterForm formType="register" />
   </UserPageTemplate>
 );
 
