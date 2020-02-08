@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import AppContext from 'context/AppContext';
 
 const ListItem = styled.li`
   font-size: ${({ theme }) => theme.fontSize.s};

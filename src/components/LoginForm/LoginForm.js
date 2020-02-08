@@ -27,6 +27,7 @@ class LoginForm extends Component {
     username: '',
     password: '',
     message: '',
+    redirect: false,
   };
 
   handleUsername = e => {
@@ -55,12 +56,12 @@ class LoginForm extends Component {
       .then(res => {
         this.setState({
           message: '',
+          redirect: true,
         });
         localStorage.setItem('usertoken', res.data);
-        return res.data;
       })
       .catch(err => {
-        if (err.response.data) {
+        if (err.response) {
           this.setState({
             message: err.response.data,
           });
@@ -76,6 +77,7 @@ class LoginForm extends Component {
         <Input placeholder="hasło" type="password" required onChange={this.handlePassword} />
         {message.passerr ? <StyledErrorMessage>{message.passerr}</StyledErrorMessage> : null}
         <StyledButton type="submit">Zaloguj</StyledButton>
+        {this.state.redirect && <Redirect to="/" />}
       </StyledForm>
     );
   }

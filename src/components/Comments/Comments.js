@@ -4,25 +4,7 @@ import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import Button from 'components/Button/Button';
 import Textarea from 'components/Textarea/Textarea';
-
-// const Comm = [
-//   {
-//     idComment: 1,
-//     content: 'Super zdjęcie!',
-//     author: 'Kamil',
-//   },
-//   {
-//     idComment: 2,
-//     content:
-//       'Super zdjęcieInvidunt diam sed sea est kasd, no sanctus magna sanctus dolor eirmod kasd sit ipsum no. Et vero nonumy lorem.!',
-//     author: 'Ala',
-//   },
-//   {
-//     idComment: 3,
-//     content: 'SSuperr!',
-//     author: 'Kamila',
-//   },
-// ];
+// import Modal from 'components/Modal/Modal';
 
 const StyledWrapper = styled.div`
   margin: 80px;
@@ -39,7 +21,7 @@ const StyledListItem = styled.li`
   list-style: none;
   margin: 5px;
   font-size: ${({ theme }) => theme.fontSize.xs};
-  padding-bottom: 20px;
+  padding: 10px 0;
   border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
 `;
 const StyledAvatar = styled.div`
@@ -54,6 +36,7 @@ const StyledInnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   padding: 10px 15px;
 `;
 
@@ -74,11 +57,27 @@ const StyledButton = styled(Button)`
 `;
 const Content = styled.p`
   font-size: ${({ theme }) => theme.fontSize.xs};
+  width: 100%;
+  text-align: left;
 `;
-const Heading = styled.p`
+const Heading = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
+
+const User = styled.p`
   font-size: ${({ theme }) => theme.fontSize.s};
   font-weight: 600;
+  margin-right: 10px;
 `;
+
+const Data = styled.p`
+  font-size: ${({ theme }) => theme.fontSize.xs};
+`;
+
+// const Err = styled.p``;
 
 class Comments extends Component {
   state = {
@@ -87,15 +86,20 @@ class Comments extends Component {
     idUser: '',
     content: '',
     idPost: '',
+    err: '',
   };
 
   componentDidMount() {
-    const token = localStorage.usertoken;
-    const decoded = jwt.decode(token);
+    if (localStorage.getItem('usertoken')) {
+      const token = localStorage.usertoken;
+      const decoded = jwt.decode(token);
+      this.setState({
+        idUser: decoded.idUser,
+        username: decoded.username,
+      });
+    }
     this.getComments();
     this.setState({
-      idUser: decoded.idUser,
-      username: decoded.username,
       idPost: this.props.idPost,
       content: this.props.content,
     });
@@ -135,27 +139,31 @@ class Comments extends Component {
   render() {
     const { comm } = this.state;
     if (comm !== null) {
-      console.log(comm.data);
       return (
-        <StyledWrapper>
-          <StyledList>
-            {comm.data.map(item => (
-              <StyledListItem>
-                <StyledAvatar></StyledAvatar>
-                <StyledInnerWrapper>
-                  <Heading>
-                    {item.idUser} / {item.data}
-                  </Heading>
-                  <Content>{item.content}</Content>
-                </StyledInnerWrapper>
-              </StyledListItem>
-            ))}
-          </StyledList>
-          <StyledForm onSubmit={this.addNewComment}>
-            <StyledTextarea onChange={this.handleContent}></StyledTextarea>
-            <StyledButton>Skomentuj</StyledButton>
-          </StyledForm>
-        </StyledWrapper>
+        <>
+          <StyledWrapper>
+            <StyledList>
+              {comm.data.map(item => (
+                <StyledListItem key={item.idComment}>
+                  <StyledAvatar></StyledAvatar>
+                  <StyledInnerWrapper>
+                    <Heading>
+                      <User>{item.idUser}</User>
+                      <Data>{item.data.substr(0, 10)}</Data>
+                    </Heading>
+                    <Content>{item.content}</Content>
+                  </StyledInnerWrapper>
+                </StyledListItem>
+              ))}
+            </StyledList>
+            {this.state.idUser !== '' ? (
+              <StyledForm onSubmit={this.addNewComment} autoComplete="off">
+                <StyledTextarea required onChange={this.handleContent}></StyledTextarea>
+                <StyledButton type="submit">Skomentuj</StyledButton>
+              </StyledForm>
+            ) : null}
+          </StyledWrapper>
+        </>
       );
     } else {
       return null;

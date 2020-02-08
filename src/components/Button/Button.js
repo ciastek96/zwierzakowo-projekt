@@ -12,6 +12,14 @@ const Button = styled.button`
   font-weight: 200;
   letter-spacing: 1.2px;
   font-size: ${({ theme }) => theme.fontSize.xs};
+  cursor: pointer;
+  transition: transform 0.15s ease-in-out;
+
+  :focus {outline:0;}
+
+  :hover {
+    transform: scale(1.05, 1.05);
+  }
 
   ${({ white }) =>
     white &&
@@ -42,6 +50,13 @@ const Button = styled.button`
         width: 60px;
         height: 60px;
         font-size: 10px;
+        cursor: pointer;
+        left: 0;
+        transition: transform 0.15s ease-in-out;
+
+        :hover {
+          transform: scale(1.1, 1.1);
+        }
       `}
 `;
 

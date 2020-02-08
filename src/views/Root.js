@@ -11,8 +11,6 @@ import ArticleView from 'views/ArticleView';
 import LogoutView from 'views/LogoutView';
 import UserSettingsView from 'views/UserSettingsView';
 import { routes } from 'routes/routes';
-import PrivateRoute from './PrivateRoute';
-import AppContext from '../context/AppContext';
 
 class Root extends Component {
   render() {

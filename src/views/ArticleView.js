@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import UserPageTemplate from 'templates/UserPageTemplate';
 import axios from 'axios';
-import Article from 'templates/Article';
+import ArticleTemplate from 'templates/ArticleTemplate';
 import Comments from 'components/Comments/Comments';
 
 class ArticleView extends Component {
@@ -43,7 +43,11 @@ class ArticleView extends Component {
     } else {
       return (
         <UserPageTemplate>
-          <Article title={post.data[0].title} content={post.data[0].content} />
+          <ArticleTemplate
+            title={post.data[0].title}
+            content={post.data[0].content}
+            idPost={this.props.match.params}
+          />
           <Comments idPost={idPost} />
         </UserPageTemplate>
       );

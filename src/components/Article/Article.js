@@ -36,7 +36,7 @@ const InnerWrapper = styled.div`
 const DateInfo = styled.p`
   font-weight: 400;
   font-size: ${({ theme }) => theme.fontSize.xs};
-  margin: 0 0 5px;
+  margin: 5px 0;
 `;
 
 const StyledHeading = styled(Heading)`
@@ -80,7 +80,7 @@ class Article extends React.Component {
         <InnerWrapper>
           <StyledHeading>{title}</StyledHeading>
           <DateInfo>
-            Upublikowano {created} dni temu przez {author}
+            Upublikowano {created} przez {author}
           </DateInfo>
         </InnerWrapper>
         <InnerWrapper flex>

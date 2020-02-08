@@ -119,8 +119,14 @@ class RegisterForm extends Component {
         }}
       >
         {({ isSubmitting }) => (
-          <StyledForm>
-            <StyledField type="text" name="username" placeholder="username" required />
+          <StyledForm autoComplete="new-password">
+            <StyledField
+              type="text"
+              name="username"
+              placeholder="username"
+              required
+              autoComplete="off"
+            />
             <StyledErrorMessage name="username" component="div" />
             {message ? <StyledMessage>{message}</StyledMessage> : null}
             <StyledField type="email" name="email" placeholder="email" required />
