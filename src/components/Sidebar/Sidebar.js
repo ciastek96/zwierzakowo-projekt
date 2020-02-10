@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Navigation from '../Nagivation/Navigation';
@@ -33,16 +33,36 @@ const StyledNavLink = styled(NavLink)`
   color: ${({ theme }) => theme.white};
 `;
 
-const Sidebar = () => (
-  <StyledWrapper>
-    <StyledLogo as={NavLink} to="/">
-      <p>Zwierzakowo</p>
-    </StyledLogo>
-    <Navigation />
-    <StyledNavLink to="/newpost">
-      <Button white>Dodaj</Button>
-    </StyledNavLink>
-  </StyledWrapper>
-);
+class Sidebar extends Component {
+  state = {
+    isButtonHidden: true,
+  };
+
+  componentDidMount() {
+    if (localStorage.getItem('usertoken')) {
+      this.setState({
+        isButtonHidden: false,
+      });
+    }
+  }
+
+  render() {
+    const { isButtonHidden } = this.state;
+
+    return (
+      <StyledWrapper>
+        <StyledLogo as={NavLink} to="/">
+          <p>Zwierzakowo</p>
+        </StyledLogo>
+        <Navigation />
+        <StyledNavLink to="/newpost">
+          <Button hidden={isButtonHidden} white>
+            Dodaj
+          </Button>
+        </StyledNavLink>
+      </StyledWrapper>
+    );
+  }
+}
 
 export default Sidebar;

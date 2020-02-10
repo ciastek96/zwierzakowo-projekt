@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Button from 'components/Button/Button';
+import { Redirect } from 'react-router-dom';
 
 const StyledFormik = styled(Form)`
   margin: 0 auto 25px;
@@ -56,13 +57,10 @@ const StyledSelect = styled.div`
     margin-right: 35px;
   }
 `;
-
-const StyledLabel = styled.label`
-  margin: 0 10px;
-`;
-
-const StyledInput = styled.input`
-  margin: 0 8px;
+const StyledErrorMessage = styled(ErrorMessage)`
+  color: red;
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  padding-left: 20px;
 `;
 
 const Switch = styled.label`
@@ -74,7 +72,7 @@ const Switch = styled.label`
 `;
 
 const Slider = styled.div`
-  background: ${({ theme }) => theme.grey100};
+  background: ${({ theme }) => theme.primary};
   bottom: 0;
   cursor: pointer;
   left: 0;
@@ -113,52 +111,74 @@ class newPostForm extends Component {
     content: '',
     idUser: '',
     username: '',
-    idPost: '',
-    created: '',
-    sex: '',
+    sex: false,
     type: '',
     breed: '',
-    pedigreed: '',
+    pedigreed: false,
     idOwner: '',
+    redirect: false,
   };
 
   componentDidMount() {
-    const token = localStorage.usertoken;
-    const decoded = jwt.decode(token);
-    this.setState({
-      idUser: decoded.idUser,
-      username: decoded.username,
-    });
+    if (localStorage.getItem('usertoken')) {
+      const token = localStorage.usertoken;
+      const decoded = jwt.decode(token);
+      this.setState({
+        idUser: decoded.idUser,
+        idOwner: decoded.idUser,
+        username: decoded.username,
+      });
+    } else {
+      this.setState({
+        redirect: true,
+      });
+    }
   }
 
-  handleTitle = e => {
+  toggleSex = e => {
     this.setState({
-      title: e.target.value,
-    });
-  };
-  handleContent = e => {
-    this.setState({
-      content: e.target.value,
+      sex: !this.state.sex,
     });
   };
 
-  addNewPost = e => {
-    e.preventDefault();
-    console.log(this.state);
-    const { title, content, idUser, username } = this.state;
+  togglePedigreed = e => {
+    this.setState({
+      pedigreed: !this.state.pedigreed,
+    });
+  };
 
-    // fetch(`http://localhost:4000/posts/add?title=${title}&content=${content}`)
-    //   .then(response => response.json())
-    //   .catch(err => console.error(err));
+  addNewPost = () => {
+    const { title, content, idUser, username, sex, type, breed, pedigreed, photo } = this.state;
+    let sexValue, pedigreedVal;
+    if (sex) {
+      sexValue = 'samica';
+    } else {
+      sexValue = 'samiec';
+    }
+    if (pedigreed) {
+      pedigreedVal = 1;
+    } else {
+      pedigreedVal = 0;
+    }
 
     axios
       .post('http://localhost:4000/posts/add', {
         idUser: idUser,
         username: username,
         title: title,
+        sex: sexValue,
+        type: type,
+        breed: breed,
+        pedigreed: pedigreedVal,
+        photo: photo,
         content: content,
+        redirect: false,
       })
-      .then(res => console.log(res))
+      .then(res =>
+        this.setState({
+          redirect: true,
+        }),
+      )
       .catch(err => console.error(err));
   };
 
@@ -170,30 +190,78 @@ class newPostForm extends Component {
       //   <Input placeholder="zdjęcie" name="image" type="file" />
       //   <StyledButton type="submit">Dodaj</StyledButton>
       // </StyledForm>
+      <>
+        {this.state.redirect && <Redirect to="/" />}
+        <Formik
+          initialValues={{
+            title: '',
+            content: '',
+            idUser: '',
+            username: '',
+            idPost: '',
+            sex: false,
+            type: '',
+            breed: '',
+            pedigreed: false,
+          }}
+          validate={values => {
+            const errors = {};
+            if (!values.title) {
+              errors.title = 'Pole wymagane.';
+            } else if (!/^[a-z0-9_-]{3,16}$/gim.test(values.title)) {
+              errors.title =
+                'Pole musi zawierać min. 3 znaków i nie może zawierać znaków specjalnych.';
+            } else {
+              this.setState({
+                title: values.title,
+              });
+            }
+            if (!values.content) {
+              errors.content = 'Pole wymagane.';
+            } else if (values.content.trim().length < 10) {
+              errors.content = 'Pole musi zawierać min. 10 znaków.';
+            } else {
+              this.setState({
+                content: values.content,
+              });
+            }
+            if (!values.type) {
+              errors.type = 'Pole wymagane';
+            } else {
+              this.setState({
+                type: values.type,
+              });
+            }
+            if (values.breed) {
+              this.setState({
+                breed: values.breed,
+              });
+            }
+            if (values.sex.checked) {
+              this.setState({
+                sex: 'samica',
+              });
+            }
+            if (values.pedigreed.checked) {
+              this.setState({
+                pedigreed: true,
+              });
+            }
 
-      <Formik
-        initialValues={{ email: '', password: '' }}
-        validate={values => {
-          const errors = {};
-          if (!values.email) {
-            errors.email = 'Required';
-          } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-            errors.email = 'Invalid email address';
-          }
-          return errors;
-        }}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
-        }}
-      >
-        {({ isSubmitting }) => (
-          <StyledFormik>
-            <StyledField type="text" name="title" placeholder="Imie / pseudonim" />
-            <ErrorMessage name="title" component="div" />
-            {/* <StyledSelect>
+            return errors;
+          }}
+          onSubmit={(values, { setSubmitting }) => {
+            setTimeout(() => {
+              this.addNewPost();
+              setSubmitting(false);
+            }, 400);
+          }}
+        >
+          {({ isSubmitting }) => (
+            <StyledFormik>
+              <StyledField type="text" name="title" placeholder="Imie, pseudonim" />
+              <StyledErrorMessage name="title" component="div" />
+              {/* <StyledSelect>
               Płeć:
               <StyledLabel>
                 <StyledInput type="radio" name="sex" value="m" />
@@ -204,9 +272,9 @@ class newPostForm extends Component {
                 samica
               </StyledLabel>
             </StyledSelect> */}
-            <StyledSelect>
-              <p>Płeć: </p>Samiec
-              {/* <StyledLabel>
+              <StyledSelect>
+                <p>Płeć: </p>Samiec
+                {/* <StyledLabel>
                 <StyledInput type="radio" name="pedigreed" value="false" />
                 nie
               </StyledLabel>
@@ -214,20 +282,20 @@ class newPostForm extends Component {
                 <StyledInput type="radio" name="pedigreed" value="true" />
                 tak
               </StyledLabel> */}
-              <Switch for="sex">
-                <Checkbox type="checkbox" id="sex" />
-                <Slider />
-              </Switch>
-              Samica
-            </StyledSelect>
-            <ErrorMessage name="sex" component="div" />
-            <StyledField type="text" name="type" placeholder="Typ np. pies" />
-            <ErrorMessage name="type" component="div" />
-            <StyledField type="text" name="breed" placeholder="Rasa np. dalmateńczyk" />
-            <ErrorMessage name="breed" component="div" />
-            <StyledSelect>
-              <p>Rodowód: </p>Nie
-              {/* <StyledLabel>
+                <Switch htmlFor="sex">
+                  <Checkbox type="checkbox" id="sex" onClick={this.toggleSex} />
+                  <Slider />
+                </Switch>
+                Samica
+              </StyledSelect>
+              <StyledErrorMessage name="sex" component="div" />
+              <StyledField type="text" name="type" placeholder="Typ np. pies" />
+              <StyledErrorMessage name="type" component="div" />
+              <StyledField type="text" name="breed" placeholder="Rasa np. dalmateńczyk" />
+              <StyledErrorMessage name="breed" component="div" />
+              <StyledSelect>
+                <p>Rodowód: </p>Nie
+                {/* <StyledLabel>
                 <StyledInput type="radio" name="pedigreed" value="false" />
                 nie
               </StyledLabel>
@@ -235,23 +303,30 @@ class newPostForm extends Component {
                 <StyledInput type="radio" name="pedigreed" value="true" />
                 tak
               </StyledLabel> */}
-              <Switch for="pedigreed">
-                <Checkbox type="checkbox" id="pedigreed" />
-                <Slider />
-              </Switch>
-              Tak
-            </StyledSelect>
-            <ErrorMessage name="pedigreed" component="div" />
-            <StyledTextarea id="textarea" component="textarea" name="content" placeholder="Opis" />
-            <ErrorMessage name="content" component="div" />
-            <StyledField type="file" name="photo" placeholder="Zdjęcie" />
-            <ErrorMessage name="photo" component="div" />
-            <StyledButton type="submit" disabled={isSubmitting}>
-              Dodaj
-            </StyledButton>
-          </StyledFormik>
-        )}
-      </Formik>
+                <Switch htmlFor="pedigreed">
+                  <Checkbox type="checkbox" id="pedigreed" onClick={this.togglePedigreed} />
+                  <Slider />
+                </Switch>
+                Tak
+              </StyledSelect>
+              <StyledErrorMessage name="pedigreed" component="div" />
+              <StyledTextarea
+                id="textarea"
+                component="textarea"
+                name="content"
+                placeholder="Opis"
+              />
+              <StyledErrorMessage name="content" component="div" />
+              {/* <StyledField type="file" name="photo" placeholder="Zdjęcie" />
+              <StyledErrorMessage name="photo" component="div" /> */}
+              <StyledButton type="submit" disabled={isSubmitting}>
+                Dodaj
+              </StyledButton>
+            </StyledFormik>
+          )}
+        </Formik>
+        {this.state.redirect && <Redirect to="/posts" />}
+      </>
     );
   }
 }

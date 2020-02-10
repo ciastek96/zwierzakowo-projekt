@@ -77,7 +77,11 @@ const Data = styled.p`
   font-size: ${({ theme }) => theme.fontSize.xs};
 `;
 
-// const Err = styled.p``;
+const StyledErrorMessage = styled.p`
+  color: red;
+  font-size: ${({ theme }) => theme.fontSize.xs};
+  padding-left: 20px;
+`;
 
 class Comments extends Component {
   state = {
@@ -111,6 +115,7 @@ class Comments extends Component {
       .then(res =>
         this.setState({
           comm: res.data,
+          error: '',
         }),
       )
       .catch(err => console.error(err));
@@ -118,17 +123,26 @@ class Comments extends Component {
 
   addNewComment = e => {
     e.preventDefault();
-    axios
-      .post('http://localhost:4000/comments/add', {
-        idUser: this.state.idUser,
-        username: this.state.username,
-        content: this.state.content,
-        idPost: this.state.idPost,
-      })
-      .then(res => {
-        this.getComments();
-      })
-      .catch(err => console.error(err));
+    if (this.state.content.trim().length > 10) {
+      axios
+        .post('http://localhost:4000/comments/add', {
+          idUser: this.state.idUser,
+          username: this.state.username,
+          content: this.state.content,
+          idPost: this.state.idPost,
+        })
+        .then(res => {
+          this.getComments();
+        })
+        .catch(err => console.error(err));
+      this.setState({
+        content: '',
+      });
+    } else {
+      this.setState({
+        error: 'Wymagane minimum 10 znaków.',
+      });
+    }
   };
 
   handleContent = e => {
@@ -148,7 +162,7 @@ class Comments extends Component {
                   <StyledAvatar></StyledAvatar>
                   <StyledInnerWrapper>
                     <Heading>
-                      <User>{item.idUser}</User>
+                      <User>{item.username}</User>
                       <Data>{item.data.substr(0, 10)}</Data>
                     </Heading>
                     <Content>{item.content}</Content>
@@ -157,10 +171,17 @@ class Comments extends Component {
               ))}
             </StyledList>
             {this.state.idUser !== '' ? (
-              <StyledForm onSubmit={this.addNewComment} autoComplete="off">
-                <StyledTextarea required onChange={this.handleContent}></StyledTextarea>
-                <StyledButton type="submit">Skomentuj</StyledButton>
-              </StyledForm>
+              <>
+                <StyledForm onSubmit={this.addNewComment} autoComplete="off">
+                  <StyledTextarea
+                    required
+                    onChange={this.handleContent}
+                    value={this.state.content}
+                  ></StyledTextarea>
+                  <StyledButton type="submit">Skomentuj</StyledButton>
+                </StyledForm>
+                {this.state.error && <StyledErrorMessage>{this.state.error}</StyledErrorMessage>}
+              </>
             ) : null}
           </StyledWrapper>
         </>

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import Input from 'components/Input/Input';
 import Sidebar from 'components/Sidebar/Sidebar';
 import Heading from 'components/Heading/Heading';
 
@@ -27,21 +26,32 @@ const StyledGridWrapper = styled.div`
 
 const StyledInnerWrapper = styled.div``;
 
-const UserPageTemplate = ({ header, children, pageType }) => (
-  <>
-    <Sidebar />
-    <StyledWrapper>
-      <StyledHeader>
-        {pageType === 'posts' && <Input search placeholder="szukaj" />}
-        <StyledHeading>{header}</StyledHeading>
-      </StyledHeader>
-      {pageType === 'posts' ? (
-        <StyledGridWrapper>{children}</StyledGridWrapper>
-      ) : (
-        <StyledInnerWrapper>{children}</StyledInnerWrapper>
-      )}
-    </StyledWrapper>
-  </>
-);
+class UserPageTemplate extends Component {
+  state = {};
+
+  // getFilteredUsersForText(text) {
+  //   return allUsers.filter(user => user.toLowerCase().includes(text.toLowerCase()));
+  // }
+
+  render() {
+    const { header, children, pageType } = this.props;
+    return (
+      <>
+        <Sidebar />
+        <StyledWrapper>
+          <StyledHeader>
+            {/* {pageType === 'posts' && <Input search placeholder="szukaj" />} */}
+            <StyledHeading>{header}</StyledHeading>
+          </StyledHeader>
+          {pageType === 'posts' ? (
+            <StyledGridWrapper>{children}</StyledGridWrapper>
+          ) : (
+            <StyledInnerWrapper>{children}</StyledInnerWrapper>
+          )}
+        </StyledWrapper>
+      </>
+    );
+  }
+}
 
 export default UserPageTemplate;

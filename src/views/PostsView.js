@@ -35,7 +35,7 @@ class PostsView extends Component {
             created={item.created}
             content={item.content}
             key={item.idPost}
-            author="Kamil"
+            author={item.username}
           />
         ))}
       </UserPageTemplate>

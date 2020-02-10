@@ -41,11 +41,6 @@ class LoginForm extends Component {
     });
   };
 
-  redirectFn = () => {
-    const { history } = this.props;
-    history.push('/');
-  };
-
   signInFn = e => {
     e.preventDefault();
     axios
@@ -54,11 +49,11 @@ class LoginForm extends Component {
         password: this.state.password,
       })
       .then(res => {
+        localStorage.setItem('usertoken', res.data);
         this.setState({
           message: '',
           redirect: true,
         });
-        localStorage.setItem('usertoken', res.data);
       })
       .catch(err => {
         if (err.response) {

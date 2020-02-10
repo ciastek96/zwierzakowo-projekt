@@ -33,6 +33,7 @@ const StyledErrorMessage = styled(ErrorMessage)`
   font-size: ${({ theme }) => theme.fontSize.xs};
   padding-left: 20px;
 `;
+
 const StyledMessage = styled.p`
   color: red;
   font-size: ${({ theme }) => theme.fontSize.xs};
@@ -87,7 +88,7 @@ class RegisterForm extends Component {
             errors.username = 'Pole nie może być puste!';
           } else if (!/^[a-z0-9_-]{4,16}$/gim.test(values.username)) {
             errors.username =
-              'Login musi zawierać 4-16 znaki i nie może posiadać znaków specjalnych.';
+              'Login musi zawierać 4-16 znaki i nie może zawierać znaków specjalnych.';
           } else {
             this.setState({
               username: values.username,

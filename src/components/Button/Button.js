@@ -19,6 +19,10 @@ const Button = styled.button`
 
   :hover {
     transform: scale(1.05, 1.05);
+
+  }
+  &:disabled{
+    cursor: no-drop;
   }
 
   ${({ white }) =>

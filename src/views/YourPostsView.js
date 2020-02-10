@@ -39,7 +39,7 @@ class YourPostsView extends Component {
     const { posts } = this.state;
     return (
       <UserPageTemplate pageType="posts" header="Twoje posty">
-        {posts.length > 0 ? (
+        {posts.length ? (
           posts.map(item => (
             <Article
               id={item.idPost}
@@ -47,7 +47,7 @@ class YourPostsView extends Component {
               created={item.created}
               content={item.content}
               key={item.idPost}
-              author="Kamil"
+              author={item.username}
             />
           ))
         ) : (

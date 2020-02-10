@@ -46,6 +46,12 @@ class ArticleView extends Component {
           <ArticleTemplate
             title={post.data[0].title}
             content={post.data[0].content}
+            created={post.data[0].created}
+            sex={post.data[0].sex}
+            type={post.data[0].type}
+            breed={post.data[0].breed}
+            username={post.data[0].username}
+            pedigreed={post.data[0].pedigreed}
             idPost={this.props.match.params}
           />
           <Comments idPost={idPost} />

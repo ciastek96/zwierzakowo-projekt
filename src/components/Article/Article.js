@@ -67,6 +67,7 @@ class Article extends React.Component {
   };
 
   handleArticleClick = () => this.setState({ redirect: true });
+  handleData = item => item.substr(0, 10);
 
   render() {
     const { id, title, created, author, content } = this.props;
@@ -74,13 +75,13 @@ class Article extends React.Component {
     if (this.state.redirect) {
       return <Redirect to={`posts/${id}`} />;
     }
-
     return (
       <StyledWrapper onClick={this.handleArticleClick}>
         <InnerWrapper>
           <StyledHeading>{title}</StyledHeading>
           <DateInfo>
-            Upublikowano {created} przez {author}
+            Opublikowano {created} przez {author}
+            {/* Upublikowano {created.substr(0,10)} przez {author} */}
           </DateInfo>
         </InnerWrapper>
         <InnerWrapper flex>
